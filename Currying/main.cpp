@@ -38,6 +38,17 @@ int main() {
 		<< ma_add(1)(1)(1) << " == " 
 		<< ma_add(1)(1,1) << std::endl;
 
+	auto refc = curry_multiapply([](int& x, int a) {
+		x += a;
+	});
+
+	int x = 4;
+
+	std::cout << "Reference parameter: ";
+	refc(x)(1);
+	refc(x, 1);
+	std::cout << x << std::endl;
+
 #ifdef _WIN32
 	system("pause");
 #endif

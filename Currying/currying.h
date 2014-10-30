@@ -20,7 +20,7 @@ namespace currying {
 		static constexpr int nargs = 1 + sizeof...(Tail);
 		static auto curry1(F func) {
 			return [=](Head head) mutable {
-				auto lambda = [=](Tail... tail) mutable {
+				auto lambda = [&](Tail... tail) mutable {
 					return func(head, tail...);
 				};
 				return currier<decltype(lambda), Tail...>::curry1(lambda);
