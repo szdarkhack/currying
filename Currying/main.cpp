@@ -27,10 +27,16 @@ int main() {
 	std::cout << "Mutable lambda: ";
 	std::cout << ml_inc(5) << std::endl;
 
-	auto ma_add = curry_multiapply(add);
+	auto ma_add = curry_multiapply([](int a, int b, int c) {
+		return a + b + c;
+	});
 
 	std::cout << "Multi-application: ";
-	std::cout << ma_add(1)(2) << " == " << ma_add(1, 2) << std::endl;
+	std::cout 
+		<< ma_add(1,1,1) << " == "
+		<< ma_add(1,1)(1) << " == "
+		<< ma_add(1)(1)(1) << " == " 
+		<< ma_add(1)(1,1) << std::endl;
 
 #ifdef _WIN32
 	system("pause");
