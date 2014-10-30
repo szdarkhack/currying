@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 namespace currying {
 
 	template <typename F, typename... Args>
@@ -61,8 +63,6 @@ namespace currying {
 	// maybe add volatile and ref qualifiers here?
 
 	// -------- MultiApplier --------
-
-#include <utility>
 
 	template <typename C, int NARGS>
 	struct applier {
