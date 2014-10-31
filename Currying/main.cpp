@@ -6,6 +6,17 @@ int add(int a, int b) {
 	return a + b;
 }
 
+struct Test
+{
+	Test() = default;
+	Test(const Test&) {
+		std::cout << "Copy constructor\n";
+	}
+	Test(Test&&) {
+		std::cout << "Move constructor\n";
+	}
+};
+
 int main() {
 	auto c_add = curry(add);
 	auto inc = c_add(1);
@@ -48,6 +59,14 @@ int main() {
 	refc(x)(1);
 	refc(x, 1);
 	std::cout << x << std::endl;
+
+	Test t;
+	std::cout << "Passing by value:\n";
+	byvalue(t)(0);
+	std::cout << "Passing by reference:\n";
+	byref(t)(0);
+	std::cout << "Passing by move:\n";
+	byvalue(std::move(t))(0);
 
 #ifdef _WIN32
 	system("pause");

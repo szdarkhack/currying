@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <functional>
 
 namespace currying {
 
@@ -15,15 +16,43 @@ namespace currying {
 	};
 
 	template <typename F, typename Head, typename... Tail>
-	struct currier < F, Head, Tail... >
+	struct currier<F, Head, Tail...>
 	{
 		static constexpr int nargs = 1 + sizeof...(Tail);
 		static auto curry1(F func) {
 			return [=](Head head) mutable {
-				auto lambda = [&](Tail... tail) mutable {
+				auto lambda = [=, head = std::move(head)](Tail... tail) mutable {
+					return func(std::move(head), tail...);
+				};
+				return currier<decltype(lambda), Tail...>::curry1(std::move(lambda));
+			};
+		}
+	};
+
+	template <typename F, typename Head, typename... Tail>
+	struct currier<F, Head&, Tail...>
+	{
+		static constexpr int nargs = 1 + sizeof...(Tail);
+		static auto curry1(F func) {
+			return [=](Head& head) mutable {
+				auto lambda = [=, head = std::ref(head)](Tail... tail) mutable {
 					return func(head, tail...);
 				};
-				return currier<decltype(lambda), Tail...>::curry1(lambda);
+				return currier<decltype(lambda), Tail...>::curry1(std::move(lambda));
+			};
+		}
+	};
+
+	template <typename F, typename Head, typename... Tail>
+	struct currier<F, Head&&, Tail...>
+	{
+		static constexpr int nargs = 1 + sizeof...(Tail);
+		static auto curry1(F func) {
+			return [=](Head&& head) mutable {
+				auto lambda = [=, head = std::move(head)](Tail... tail) mutable {
+					return func(std::move(head), tail...);
+				};
+				return currier<decltype(lambda), Tail...>::curry1(std::move(lambda));
 			};
 		}
 	};
